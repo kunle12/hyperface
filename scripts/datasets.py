@@ -151,11 +151,11 @@ def _extract_valid_rects(rects, img, others_landmark_pts):
 
 def _flip_y(img, landmark, landmark_visib, pose):
     # copy
-    img = np.array(img)
     landmark = np.array(landmark)
     pose = np.array(pose)
 
     # Flip
+    #img = cv.flip(img)
     img = img[:, ::-1, :]
 
     # AFLW 21 points landmark

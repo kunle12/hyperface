@@ -2,10 +2,10 @@
 
 import six
 
+import chainer
 from chainer import reporter as reporter_module
 from chainer.training import extensions
 from chainer import variable
-
 
 class SequentialEvaluator(extensions.Evaluator):
     '''  Sequential Evaluator
@@ -26,17 +26,18 @@ class SequentialEvaluator(extensions.Evaluator):
 
         observation = {}
         with reporter_module.report_scope(observation):
+            chainer.config.enable_backprop = False
             in_arrays = self.converter(batch, self.device)
             if isinstance(in_arrays, tuple):
-                in_vars = tuple(variable.Variable(x, volatile='on')
+                in_vars = tuple(variable.Variable(x)
                                 for x in in_arrays)
                 eval_func(*in_vars)
             elif isinstance(in_arrays, dict):
-                in_vars = {key: variable.Variable(x, volatile='on')
+                in_vars = {key: variable.Variable(x)
                            for key, x in six.iteritems(in_arrays)}
                 eval_func(**in_vars)
             else:
-                in_var = variable.Variable(in_arrays, volatile='on')
+                in_var = variable.Variable(in_arrays)
                 eval_func(in_var)
 
         return observation
